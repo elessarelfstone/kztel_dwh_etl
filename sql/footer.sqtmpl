@@ -1,0 +1,13 @@
+) t;
+
+spool off;
+
+spool temp_log.csv
+
+select 
+trim(&row_cnt) as total_rows_found
+from dual;
+
+spool off;
+
+exit;
