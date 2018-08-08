@@ -25,8 +25,8 @@ Vagrant.configure("2") do |config|
       pg_db.name = "dwh-server"
       pg_db.cpus = 2
       pg_db.memory = "3048"
-
     end
+    pg_db.vm.provision "shell", path: "./scripts/vagrant_pgdb.sh"
   end
   
 end
