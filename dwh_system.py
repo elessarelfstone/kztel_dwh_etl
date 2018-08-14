@@ -10,6 +10,7 @@ from pathlib import Path
 
 class DwhSystem():
     def __init__(self, source_code):
+
         self.tmp_dir = os.getenv("DWH_TMP_DIR")
         self.logs_dir = os.getenv("DWH_LOGS_DIR")
         self.data_dir = os.getenv("DWH_DATA_DIR")
@@ -46,7 +47,7 @@ class DwhSystem():
         self.logger.addHandler(console)
         self.logger.addHandler(file_handler)
 
-    def _get_data_source(self, code):
+    def _get_connect(self):
         host = os.environ["DWH_DB_HOST"]
         dbname = os.environ["DWH_DB_NAME"]
         user = os.environ["DWH_DB_USER"]
@@ -54,7 +55,11 @@ class DwhSystem():
 
         conn = psycopg2.connect("host={} dbname={} user={} password={}".
                                 format(host, dbname, user, password))
+        return  conn
 
+    def get_data_source(self, code):
+
+        conn = self._get_connect()
         cur = conn.cursor()
         sql = "select * from sys.data_source where code = %s"
         cur.execute(sql, (code, ))
@@ -64,10 +69,15 @@ class DwhSystem():
         result.pop("conn_detail")
         return result
 
-
-
-
-
-
-
-
+    def get_all_tables(self, code):
+        conn = self._get_connect()
+        cur = conn.cursor()
+        sql = """select
+                    dst.script_template,
+                    dst.code,
+                    dst.name
+                from sys.data_source ds,
+                    sys.data_source_table dst
+                    where ds.data_source_type_id = dst.data_source_type_id and
+                    ds.code = 'asr_uralsk'"""
+        cur.execute(sql, (code,))

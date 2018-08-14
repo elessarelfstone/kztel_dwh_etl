@@ -17,7 +17,8 @@ Vagrant.configure("2") do |config|
   config.vm.define "pg_db" do |pg_db|
     pg_db.vm.box = "centos/7"
     pg_db.vm.hostname = "dbserver-postgresql"
-    pg_db.vm.network "public_network", ip: "10.210.6.211"
+    # pg_db.vm.network "public_network", ip: "10.210.6.211"
+    pg_db.vm.network "private_network", ip: "192.168.100.10"
     pg_db.vm.synced_folder "E:\\VMs\\Share\\centos", "/home/share"  
 
     config.vm.provider "virtualbox" do |pg_db|
@@ -26,7 +27,7 @@ Vagrant.configure("2") do |config|
       pg_db.cpus = 2
       pg_db.memory = "3048"
     end
-    pg_db.vm.provision "shell", path: "./scripts/vagrant_pgdb.sh"
+    pg_db.vm.provision "shell", path: "vagrant_pgdb.sh"
   end
   
 end

@@ -8,7 +8,7 @@ from utils import Utils
 
 
 class DwhOracleTable(DwhProcess):
-    def __init__(self,dwh_sys, params):
+    def __init__(self, dwh_sys, params):
         super(DwhOracleTable, self).__init__(dwh_sys, params)
         self.template_suffix = ".sqtmpl"
         self.main_template = "main.sqtmpl"

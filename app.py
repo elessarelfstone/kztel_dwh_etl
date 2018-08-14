@@ -1,8 +1,5 @@
 import dwh_oracle_table
 import dwh_system
-import settings
-import utils
-import exceptions
 
 
 

@@ -101,9 +101,9 @@ values (1, 1, 'АСР БИТТЛ ЗКО', '{
 
 insert into sys.data_source_table
 (data_source_table_id, data_source_type_id, name, description, code, script_template)
-values (1, 1, 'poligon.tdr', '', 'tdr', 'tdr.sqtmpl')
+values (1, 1, 'poligon.tdr', '', 'tdr', 'tdr.sqtmpl');
 
 insert into sys.data_source_table
 (data_source_table_id, data_source_type_id, name, description, code, script_template)
-values (2, 1, 'poligon.payment', '', 'payment', 'payment.sqtmpl')
+values (2, 1, 'poligon.payment', '', 'payment', 'payment.sqtmpl');
 
