@@ -1,15 +1,11 @@
-import dwh_oracle_table
+import dwh_oracle_extract
 import dwh_system
+import collections
+import settings
 
+dwh_sys = dwh_system.DwhSystem("asr_astana")
+for name, value in dwh_sys.data_source_info._asdict().items():
+    print(name, "=", value)
 
-
-dwh_sys = dwh_system.DwhSystem("asr_uralsk")
-dwh = dwh_oracle_table.DwhOracleTable(dwh_sys,  {"pDate1": "16.07.2018"})
-dwh.save_table_data("tdr")
-dwh.save_table_data("payment")
-
-
-dwh_sys = dwh_system.DwhSystem("asr_aktobe")
-dwh = dwh_oracle_table.DwhOracleTable(dwh_sys,  {"pDate1": "16.07.2018"})
-dwh.save_table_data("tdr")
-dwh.save_table_data("payment")
+dwh = dwh_oracle_extract.DwhOracleExtract(dwh_sys, {"pDate1": "02.08.2018", "pDate2": "02.08.2018"})
+dwh.save_data()

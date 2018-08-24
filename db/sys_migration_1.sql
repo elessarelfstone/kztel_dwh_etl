@@ -96,6 +96,31 @@ values (1, 1, 'АСР БИТТЛ ЗКО', '{
         '(DESCRIPTION = (ADDRESS_LIST =  (ADDRESS = (PROTOCOL=TCP)(HOST=10.71.200.15)(PORT=1521)))(CONNECT_DATA = (SERVICE_NAME=URALASR.weskaz)))',
         'asr_uralsk');
 
+insert into sys.data_source
+(data_source_id, data_source_type_id, name, conn_detail, tns, code)
+values (1, 1, 'АСР БИТТЛ Алматы', '{
+  "db_sid": "ORCL1",
+  "db_host": "10.10.70.63",
+  "db_pass": "ciuyrhvv",
+  "db_port": "1521",
+  "db_user": "reporter"
+}',
+        '(DESCRIPTION = (ADDRESS_LIST =  (ADDRESS = (PROTOCOL=TCP)(HOST=10.10.70.63)(PORT=1521)))(CONNECT_DATA = (SERVICE_NAME=orcl1)))',
+        'asr_almaty');
+
+insert into sys.data_source
+(data_source_id, data_source_type_id, name, conn_detail, tns, code)
+values (1, 1, 'АСР БИТТЛ Астана', '{
+  "db_sid": "ORCL",
+  "db_host": "10.72.1.50",
+  "db_pass": "ciuyrhvv",
+  "db_port": "1521",
+  "db_user": "reporter"
+}',
+        '(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL=TCP)(HOST=10.72.1.50)(PORT=1521)))(CONNECT_DATA = (SERVICE_NAME=orcl.Astanatelecom)))',
+        'asr_astana');
+
+
 -----
 
 

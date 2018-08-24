@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sudo yum install mc -y
+sudo yum install net-tools -y
 
 # posgtres installlation
 sudo yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm -y
@@ -17,6 +18,7 @@ echo "local 	all		all		trust" >> /var/lib/pgsql/10/data/pg_hba.conf
 echo "host 	all		all		192.168.100.1/16			md5" >> /var/lib/pgsql/10/data/pg_hba.conf
 echo "listen_addresses = '*'" >> /var/lib/pgsql/10/data/postgresql.conf
 sudo systemctl reload postgresql-10
+sudo systemctl restart postgresql-10
 psql -U postgres -d postgres -a -w -f /vagrant/db/system.sql
 psql -U dwh_worker -d dwh -a -w -f /vagrant/db/sys_migration_1.sql
 

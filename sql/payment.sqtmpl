@@ -33,8 +33,8 @@ select
 ||','||document_id
 ||','||document_pos
 from db.view_m_payment p
-where p.report_date_id = decode(extract(month from to_date('17.07.2018', 'dd.mm.yyyy')),0,12,extract(month from to_date('17.07.2018', 'dd.mm.yyyy')))
-  and p.system_date between to_date('17.07.2018', 'dd.mm.yyyy') and to_date('17.07.2018', 'dd.mm.yyyy') + 1 - 1/(86400)
+where p.report_date_id = decode(extract(month from to_date('{pDate}', 'dd.mm.yyyy')),0,12,extract(month from to_date('{pDate}', 'dd.mm.yyyy')))
+  and p.system_date between to_date('{pDate}', 'dd.mm.yyyy') and to_date('{pDate}', 'dd.mm.yyyy') + 1 - 1/(86400)
 union
 select
        nvl(abonent_id, -1)
@@ -70,8 +70,8 @@ select
 ||','||document_id
 ||','||document_pos
 from db.view_m_payment p
-where p.report_date_id = decode(extract(month from to_date('17.07.2018', 'dd.mm.yyyy'))-1,0,12,extract(month from to_date('17.07.2018', 'dd.mm.yyyy'))-1)
-  and p.SYSTEM_DATE between to_date('17.07.2018', 'dd.mm.yyyy') and to_date('17.07.2018', 'dd.mm.yyyy') + 1 - 1/(86400)
+where p.report_date_id = decode(extract(month from to_date('{pDate}', 'dd.mm.yyyy'))-1,0,12,extract(month from to_date('{pDate}', 'dd.mm.yyyy'))-1)
+  and p.SYSTEM_DATE between to_date('{pDate}', 'dd.mm.yyyy') and to_date('{pDate}', 'dd.mm.yyyy') + 1 - 1/(86400)
 union
 select
        nvl(abonent_id, -1)
@@ -107,5 +107,5 @@ select
 ||','||document_id
 ||','||document_pos
 from db.view_m_payment p
-where p.report_date_id = decode(extract(month from to_date('17.07.2018', 'dd.mm.yyyy'))+1,0,12,extract(month from to_date('17.07.2018', 'dd.mm.yyyy'))+1)
-  and p.SYSTEM_DATE between to_date('17.07.2018', 'dd.mm.yyyy') and to_date('17.07.2018', 'dd.mm.yyyy') + 1 - 1/(86400)
+where p.report_date_id = decode(extract(month from to_date('{pDate}', 'dd.mm.yyyy'))+1,0,12,extract(month from to_date('{pDate}', 'dd.mm.yyyy'))+1)
+  and p.SYSTEM_DATE between to_date('{pDate}', 'dd.mm.yyyy') and to_date('{pDate}', 'dd.mm.yyyy') + 1 - 1/(86400)

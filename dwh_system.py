@@ -1,28 +1,46 @@
-import psycopg2
-import settings
 import os
-import json
 import logging
-from utils import Utils
 from datetime import datetime
 from pathlib import Path
+from collections import namedtuple
+import psycopg2
+from utils import Utils
 
 
-class DwhSystem():
+DataSourceInfo = namedtuple("DataSourceInfo",
+                               ["name", "db_sid", "db_host", "db_pass", "db_port", "db_user", "tns", "code"])
+
+DataTableInfo = namedtuple("DataTable", ["code", "name", "script_template"])
+
+
+
+class DwhSystem:
     def __init__(self, source_code):
+        # getting all paths and making needed dirs
+        self.tmp_dir = Path(os.getenv("DWH_TMP_DIR"))
+        self.logs_dir = Path(os.getenv("DWH_LOGS_DIR"))
+        self.data_dir = Path(os.getenv("DWH_DATA_DIR"))
+        self.work_dir = Path(os.path.dirname(os.path.abspath(__file__)))
+        self.sql_tmpl_dir = Path(os.path.join(self.work_dir, 'sql'))
 
-        self.tmp_dir = os.getenv("DWH_TMP_DIR")
-        self.logs_dir = os.getenv("DWH_LOGS_DIR")
-        self.data_dir = os.getenv("DWH_DATA_DIR")
-        self.work_dir = os.path.dirname(os.path.abspath(__file__))
-        self.sql_tmpl_dir = os.path.join(self.work_dir, 'sql')
+        self.source_code = source_code
 
-        self.data_source = self._get_data_source(source_code)
+        # getting data source info
+        ds_dict = self._get_data_source_info(source_code)
+        self.data_source_info = DataSourceInfo(ds_dict["name"], ds_dict["db_sid"], ds_dict["db_host"],
+                                               ds_dict["db_pass"], ds_dict["db_port"], ds_dict["db_user"],
+                                               ds_dict["tns"], ds_dict["code"])
+
+        dt_dict = self.get_tables_info(source_code)
+        self.data_tables = []
+        for tb in dt_dict:
+            self.data_tables.append(DataTableInfo(tb["code"], tb["name"], tb["script_template"]))
+
 
         # making some needed paths
-        Path(self.tmp_dir).mkdir(parents=True, exist_ok=True)
-        Path(self.logs_dir).mkdir(parents=True, exist_ok=True)
-        Path(self.data_dir).mkdir(parents=True, exist_ok=True)
+        self.tmp_dir.mkdir(parents=True, exist_ok=True)
+        self.logs_dir.mkdir(parents=True, exist_ok=True)
+        self.data_dir.mkdir(parents=True, exist_ok=True)
 
         # getting unique id for session
         self.session_uuid = Utils.create_session_uuid()
@@ -49,35 +67,49 @@ class DwhSystem():
 
     def _get_connect(self):
         host = os.environ["DWH_DB_HOST"]
-        dbname = os.environ["DWH_DB_NAME"]
+        db_name = os.environ["DWH_DB_NAME"]
         user = os.environ["DWH_DB_USER"]
         password = os.environ["DWH_DB_PASS"]
 
         conn = psycopg2.connect("host={} dbname={} user={} password={}".
-                                format(host, dbname, user, password))
-        return  conn
+                                format(host, db_name, user, password))
+        return conn
 
-    def get_data_source(self, code):
+    def _get_data_source_info(self, code):
 
         conn = self._get_connect()
         cur = conn.cursor()
-        sql = "select * from sys.data_source where code = %s"
+        sql = """select 
+                    ds.code,
+                    ds.name,
+                    ds.conn_detail,
+                    ds.conn_detail ->> 'db_sid' as db_sid,
+                    ds.conn_detail ->> 'db_pass' as db_pass,
+                    ds.conn_detail ->> 'db_port' as db_port,
+                    ds.conn_detail ->> 'db_user' as db_user,
+                    ds.conn_detail ->> 'db_host' as db_host,
+                    ds.tns                     
+                 from sys.data_source ds 
+                 where code = %s"""
         cur.execute(sql, (code, ))
-        result = Utils.get_listdict_from_cur(cur)[0]
-        conn_detail = result["conn_detail"]
-        result.update(conn_detail)
-        result.pop("conn_detail")
-        return result
+        ds_dict = Utils.get_listdict_from_cur(cur)[0]
+        return ds_dict
 
-    def get_all_tables(self, code):
+    def get_tables_info(self, code):
         conn = self._get_connect()
         cur = conn.cursor()
-        sql = """select
-                    dst.script_template,
-                    dst.code,
-                    dst.name
+        sql = """
+                select dstb.name,
+                       dstb.code,
+                       dstb.script_template
                 from sys.data_source ds,
-                    sys.data_source_table dst
-                    where ds.data_source_type_id = dst.data_source_type_id and
-                    ds.code = 'asr_uralsk'"""
-        cur.execute(sql, (code,))
+                     sys.data_source_table dstb,
+                     sys.data_source_type dstp
+                where
+                    dstb.data_source_type_id = dstp.data_source_type_id and
+                    ds.data_source_type_id = dstb.data_source_type_id and
+                    ds.code = %s
+                """
+        cur.execute(sql, (code, ))
+        dt_dict = Utils.get_listdict_from_cur(cur)
+        return dt_dict

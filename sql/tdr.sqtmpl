@@ -26,8 +26,8 @@ select
 ||','||nvl((select id from db.tariff_type tt where tt.id = t.tariff_type_id), 0)        
 ||','||nvl(discount_type_id, 0)
 from db.tdr t
-where t.report_date_id = extract(month from to_date('{pDate1}', 'dd.mm.yyyy'))
-	  and t.order_date between to_date('{pDate1}', 'dd.mm.yyyy') and to_date('{pDate1}', 'dd.mm.yyyy') + 1 - 1/(86400)
+where t.report_date_id = extract(month from to_date('{pDate}', 'dd.mm.yyyy'))
+	  and t.order_date between to_date('{pDate}', 'dd.mm.yyyy') and to_date('{pDate}', 'dd.mm.yyyy') + 1 - 1/(86400)
 union all
 select 
        report_date_id
@@ -56,8 +56,8 @@ select
 ||','||nvl((select id from db.tariff_type tt where tt.id = t.tariff_type_id), 0)        
 ||','||nvl(discount_type_id, 0)       
 from db.tdr t
-where t.report_date_id = decode(extract(month from to_date('{pDate1}', 'dd.mm.yyyy'))-1,0,12,extract(month from to_date('{pDate1}', 'dd.mm.yyyy'))-1)
-  and t.order_date between to_date('{pDate1}', 'dd.mm.yyyy') and to_date('{pDate1}', 'dd.mm.yyyy') + 1 - 1/(86400)
+where t.report_date_id = decode(extract(month from to_date('{pDate}', 'dd.mm.yyyy'))-1,0,12,extract(month from to_date('{pDate}', 'dd.mm.yyyy'))-1)
+  and t.order_date between to_date('{pDate}', 'dd.mm.yyyy') and to_date('{pDate}', 'dd.mm.yyyy') + 1 - 1/(86400)
 union all
 select 
        report_date_id
@@ -86,5 +86,5 @@ select
 ||','||nvl((select id from db.tariff_type tt where tt.id = t.tariff_type_id), 0)        
 ||','||nvl(discount_type_id, 0)  
 from db.tdr t
-where t.report_date_id = decode(extract(month from to_date('{pDate1}', 'dd.mm.yyyy'))+1,13,1,extract(month from to_date('{pDate1}', 'dd.mm.yyyy'))+1)
-  and t.order_date between to_date('{pDate1}', 'dd.mm.yyyy') and to_date('{pDate1}', 'dd.mm.yyyy') + 1 - 1/(86400)
+where t.report_date_id = decode(extract(month from to_date('{pDate}', 'dd.mm.yyyy'))+1,13,1,extract(month from to_date('{pDate}', 'dd.mm.yyyy'))+1)
+  and t.order_date between to_date('{pDate}', 'dd.mm.yyyy') and to_date('{pDate}', 'dd.mm.yyyy') + 1 - 1/(86400)

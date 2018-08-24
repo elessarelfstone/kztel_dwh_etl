@@ -1,13 +1,4 @@
-import os
 import re
-from pathlib import Path
-import logging
-import datetime
-from datetime import datetime, timedelta
-import settings
-from utils import Utils
-from dwh_system import DwhSystem
-
 
 class DwhProcess():
     def __init__(self, dwh_sys,  params):
